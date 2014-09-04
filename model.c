@@ -19,8 +19,14 @@ int get_cell_by_index(region r, int index) {
   return r & (1 << index);
 }
 
-int get_cell(region r, int i, int j) {
+int region_get_cell(region r, int i, int j) {
   return get_cell_by_index(r, i + j*4);
+}
+
+int get_cell(life l, int i, int j) {
+  int regionX = i/4, regionY = j/4, regionIndex = regionY*4 + regionX,
+    cellX = i - regionX*4, cellY = j - regionY*4;
+  return region_get_cell(l.regions[regionIndex], i, j);
 }
 
 region inner_neighbor_mask(int index) {
@@ -28,13 +34,6 @@ region inner_neighbor_mask(int index) {
   return triplet >> (index - 5)
     | duet >> (index - 1)
     | triplet >> (index + 3);
-}
-
-void corner_neighbor_mask
-(region tl, region tr, region bl, region br,
- region* mtl, region* mtr, region* mbl, region* mbr)
-{
-  
 }
 
 int inner_neighbors(region r, int index) {

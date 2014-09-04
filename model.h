@@ -36,9 +36,9 @@ void evolve_inner(region source, region* dest);
 void evolve_corner(region tl, region tr, region bl, region br,
                    region* dtl, region* dtr, region* dbl, region* dbr);
 
-int get_cell(region r, int i, int j);
-
 typedef struct { int w, h; region* regions; }
   life;
+
+int get_cell(life l, int i, int j);
 
 #endif
