@@ -36,44 +36,37 @@ void main(){
       l.regions[2] = 1290; l.regions[3] = 17;
     }
     else if (c == 's') {
-      corner tmp = { l.regions[0], l.regions[1], l.regions[2], l.regions[3] };
       cornerRef dst = { &l.regions[0], &l.regions[1], &l.regions[2], &l.regions[3] };
-      roll_corner(tmp, -1, -1, dst);
+      roll_corner(dst, -1, -1, dst);
     }
     else if (c == 'd') {
-      corner tmp = { l.regions[0], l.regions[1], l.regions[2], l.regions[3] };
       cornerRef dst = { &l.regions[0], &l.regions[1], &l.regions[2], &l.regions[3] };
-      roll_corner(tmp, 0, -1, dst);
+      roll_corner(dst, 0, -1, dst);
     }
     else if (c == 'f') {
-      corner tmp = { l.regions[0], l.regions[1], l.regions[2], l.regions[3] };
       cornerRef dst = { &l.regions[0], &l.regions[1], &l.regions[2], &l.regions[3] };
-      roll_corner(tmp, 1, -1, dst);
+      roll_corner(dst, 1, -1, dst);
     }
     else if (c == 'x') {
-      corner tmp = { l.regions[0], l.regions[1], l.regions[2], l.regions[3] };
       cornerRef dst = { &l.regions[0], &l.regions[1], &l.regions[2], &l.regions[3] };
-      roll_corner(tmp, -1, 1, dst);
+      roll_corner(dst, -1, 1, dst);
     }
     else if (c == 'c') {
-      corner tmp = { l.regions[0], l.regions[1], l.regions[2], l.regions[3] };
       cornerRef dst = { &l.regions[0], &l.regions[1], &l.regions[2], &l.regions[3] };
-      roll_corner(tmp, 0, 1, dst);
+      roll_corner(dst, 0, 1, dst);
     }
     else if (c == 'v') {
-      corner tmp = { l.regions[0], l.regions[1], l.regions[2], l.regions[3] };
       cornerRef dst = { &l.regions[0], &l.regions[1], &l.regions[2], &l.regions[3] };
-      roll_corner(tmp, 1, 1, dst);
+      roll_corner(dst, 1, 1, dst);
     }
     else if (c == 'z') {
-      corner tmp = { l.regions[0], l.regions[1], l.regions[2], l.regions[3] };
       cornerRef dst = { &l.regions[0], &l.regions[1], &l.regions[2], &l.regions[3] };
-      roll_corner(tmp, -1, 0, dst);
+      roll_corner(dst, -1, 0, dst);
     }
     else if (c == 'b') {
-      corner tmp = { l.regions[0], l.regions[1], l.regions[2], l.regions[3] };
       cornerRef dst = { &l.regions[0], &l.regions[1], &l.regions[2], &l.regions[3] };
-      roll_corner(tmp, 1, 0, dst);
+      roll_corner(dst, 1, 0, dst);
+    }
     else if (c == 'n') {
       region newRegs[l.w * l.h / 16];
       life tmp = { .w = l.w, .h = l.h, .regions = newRegs };
