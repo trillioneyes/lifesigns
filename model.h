@@ -20,6 +20,9 @@ typedef uint16_t region;
 // 0 0 0 0
 void evolve_inner(region source, region* dest);
 
+typedef struct { region tl, tr, bl, br; } corner;
+typedef struct { region *tl, *tr, *bl, *br; } cornerRef;
+
 // Evolve the place where the four given regions intersect:
 // tl tl tl tl  tr tr tr tr
 // tl tl tl tl  tr tr tr tr
@@ -33,8 +36,7 @@ void evolve_inner(region source, region* dest);
 // Asterisks are considered/written, lowercase letters are unchanged.
 // The top and left are untouched because this is a torus, and they'll
 // be picked up later.
-void evolve_corner(region tl, region tr, region bl, region br,
-                   region* dtl, region* dtr, region* dbl, region* dbr);
+void evolve_corner(corner src, cornerRef dst);
 
 typedef struct { int w, h; region* regions; }
   life;
