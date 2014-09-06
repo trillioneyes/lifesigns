@@ -11,7 +11,7 @@ void print_life(life l) {
     putchar('|');
     for (int i = 0; i < l.w; i++) {
       if (get_cell(l, i, j)) putchar('*');
-      else putchar(' ');
+      else putchar('.');
     }
     putchar('|'); putchar('\n');
   }
