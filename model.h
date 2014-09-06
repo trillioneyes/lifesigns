@@ -36,11 +36,17 @@ typedef struct { region *tl, *tr, *bl, *br; } cornerRef;
 // Asterisks are considered/written, lowercase letters are unchanged.
 // The top and left are untouched because this is a torus, and they'll
 // be picked up later.
-void evolve_corner(corner src, cornerRef dst);
+void evolve_corner(cornerRef src, cornerRef dst);
+
+void roll_corner(cornerRef src, int i, int j, cornerRef dst);
 
 typedef struct { int w, h; region* regions; }
   life;
 
 int get_cell(life l, int i, int j);
+
+void evolve(life source, life* dest);
+
+int copy_life(life source, life* dest);
 
 #endif

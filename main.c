@@ -74,6 +74,11 @@ void main(){
       corner tmp = { l.regions[0], l.regions[1], l.regions[2], l.regions[3] };
       cornerRef dst = { &l.regions[0], &l.regions[1], &l.regions[2], &l.regions[3] };
       roll_corner(tmp, 1, 0, dst);
+    else if (c == 'n') {
+      region newRegs[l.w * l.h / 16];
+      life tmp = { .w = l.w, .h = l.h, .regions = newRegs };
+      evolve(l, &tmp);
+      copy_life(tmp, &l);
     }
     else if (c == '\n') {
       print_life(l);
