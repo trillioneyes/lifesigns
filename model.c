@@ -83,7 +83,7 @@ region roll_region(region r, int i, int j) {
   int shift = i + 4*j;
   region result = lshift(r, shift);
   // Now there's a portion we need to zero out
-  region rowMask = ((i<0) ? (15 << 4 + i) : (15 >> 4 - i)) & 15, mask = rowMask;
+  region rowMask = ((i<0) ? (15 << (4 + i)) : (15 >> (4 - i))) & 15, mask = rowMask;
   for (int i = 0; i < 4; i++) {
     mask <<= 4; mask += rowMask;
   }
