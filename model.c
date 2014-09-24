@@ -1,10 +1,36 @@
 #include "model.h"
 
-region write_inner_mask = 1632 /*0000 0110 0110 0000*/,
-  write_tl_mask = 1 /*0000 0000 0000 0001*/,
-  write_tr_mask = 14 /*0000 0000 0000 1110*/,
-  write_bl_mask = 4368 /*0001 0001 0001 0000*/,
-  write_br_mask = 59520 /*1110 1000 1000 0000*/;
+
+region lshift(region, int);
+void set_portion(region, region, region*);
+
+region roll_region(region r, int i, int j) {
+  int shift = i + 4*j;
+  region result = lshift(r, shift);
+  // Now there's a portion we need to zero out
+  region rowMask = ((i<0) ? (15 << (4 + i)) : (15 >> (4 - i))) & 15, mask = rowMask;
+  for (int i = 0; i < 4; i++) {
+    mask <<= 4; mask += rowMask;
+  }
+  set_portion(0, mask, &result);
+  return result;
+}
+
+region rect_mask(int w, int h) {
+  int dx, dy;
+  if (w<0) dx = 4 + w;
+  else dx = -4 + w;
+  if (h<0) dy = 4 + h;
+  else dy = -4 + h;
+  return roll_region(~0, dx, dy);
+}
+
+
+region write_inner_mask = 1632 /*0000 0110 0110 0000*/;
+#define write_tl_mask (rect_mask(-1, -1)) /*0000 0000 0000 0001*/
+#define write_tr_mask (rect_mask(3, -1)) /*0000 0000 0000 1110*/
+#define write_bl_mask (rect_mask(-1, 3)) /*0001 0001 0001 0000*/
+#define write_br_mask (rect_mask(3, 3) & ~rect_mask(-3, -3)) /*1110 1000 1000 0000*/
 
 int pop_count(region r) {
   int i = 0;
@@ -77,27 +103,6 @@ region rshift(region r, int offset) {
 region lshift(region r, int offset) {
   if (offset < 0) return r >> -offset;
   else return r << offset;
-}
-
-region roll_region(region r, int i, int j) {
-  int shift = i + 4*j;
-  region result = lshift(r, shift);
-  // Now there's a portion we need to zero out
-  region rowMask = ((i<0) ? (15 << (4 + i)) : (15 >> (4 - i))) & 15, mask = rowMask;
-  for (int i = 0; i < 4; i++) {
-    mask <<= 4; mask += rowMask;
-  }
-  set_portion(0, mask, &result);
-  return result;
-}
-
-region rect_mask(int w, int h) {
-  int dx, dy;
-  if (w<0) dx = 4 + w;
-  else dx = -4 + w;
-  if (h<0) dy = 4 + h;
-  else dy = -4 + h;
-  return roll_region(~0, dx, dy);
 }
 
 cornerRef get_corner_ref(corner*);
@@ -186,7 +191,7 @@ void evolve_corner(cornerRef src, cornerRef dst) {
   // updated are within the "inner" portion of one of the new corner's regions. Then we
   // can call evolve_region, and copy the results to dst using the write masks for
   // corners.
-  corner tmp, buf = {0, 0, 0, 0}; // buf isn't completely initialized so make sure it's 0
+  corner tmp = {0, 0, 0, 0}, buf = {0, 0, 0, 0};
   cornerRef tmpR = get_corner_ref(&tmp),
     bufR = get_corner_ref(&buf);
 
@@ -249,4 +254,25 @@ int copy_life(life src, life* dst) {
   for (int i = 0; i < src.w*src.h/16; i++)
     dst->regions[i] = src.regions[i];
   return 0;
+}
+
+
+// printing corners during debugging
+#include <stdio.h>
+void print_corner(cornerRef c) {
+  puts("+--------+");
+  for (int j = 0; j < 8; j++) {
+    putchar('|');
+    for(int i = 0; i < 8; i++) {
+      region containing;
+      if (i < 4 && j < 4) containing = *c.tl;
+      else if (i < 4 && j >= 4) containing = *c.bl;
+      else if (i >= 4 && j < 4) containing = *c.tr;
+      else containing = *c.br;
+      int cell = region_get_cell(containing, i%4, j%4);
+      putchar(cell? '*' : '.');
+    }
+    puts("|");
+  }
+  puts("+--------+\n");
 }
