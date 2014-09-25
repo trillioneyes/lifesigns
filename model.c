@@ -56,10 +56,18 @@ int get_cell(life l, int i, int j) {
 }
 
 region inner_neighbor_mask(int index) {
-  region triplet = 57344, duet = 40960;
-  return triplet >> (index - 5)
-    | duet >> (index - 1)
-    | triplet >> (index + 3);
+  int i, j;
+  switch(index) {
+  case 5:
+    i = 0, j = 0; break;
+  case 6:
+    i = 1, j = 0; break;
+  case 9:
+    i = 0, j = 1; break;
+  case 10:
+    i = 1, j = 1; break;
+  }
+  return roll_region(rect_mask(3, 3), i, j) & ~(1 << index);
 }
 
 int inner_neighbors(region r, int index) {
@@ -67,15 +75,14 @@ int inner_neighbors(region r, int index) {
 }
 
 region cell_next_state(int cell, int num_neighbors) {
-  return !(num_neighbors < 2
-           || num_neighbors > 3
-           || (num_neighbors == 2 && !cell));
+  return ((cell && (num_neighbors == 2 || num_neighbors == 3)) ||
+          (!cell && num_neighbors == 3));
 }
 
 region evolve_inner_cell(region r, int index) {
   int n = inner_neighbors(r, index);
   int cell = get_cell_by_index(r, index);
-  return cell_next_state(cell, n) << (15 - index);
+  return cell_next_state(cell, n) << index;
 }
 
 void set_portion(region src, region mask, region* dst) {
