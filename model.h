@@ -5,10 +5,10 @@
 
 // A region is a contiguous 4x4 area of the life state, represented as a 16
 // bit integer.
-//  0  1  2  3
-//  4  5  6  7
-//  8  9 10 11
-// 12 13 14 15
+// 15 14 13 12
+// 11 10  9  8
+//  7  6  5  4
+//  3  2  1  0
 typedef uint16_t region;
 
 // Evolve the inner cells of the provided region, writing the result
@@ -36,9 +36,24 @@ typedef struct { region *tl, *tr, *bl, *br; } cornerRef;
 // Asterisks are considered/written, lowercase letters are unchanged.
 // The top and left are untouched because this is a torus, and they'll
 // be picked up later.
+//
+// Since it's a torus, a given intersection of four regions will be processed
+// multiple times. Here's another diagram showing when each edge square will
+// get updated:
+// 33 33 33 22  22 22 22 33
+// 33 .. .. 22  22 .. .. 33
+// 33 .. .. 22  22 .. .. 33
+// 11 11 11 00  00 00 00 11
+//
+// 11 11 11 00  00 00 00 11
+// 11 .. .. 00  00 .. .. 11
+// 11 .. .. 00  00 .. .. 11
+// 33 33 33 22  22 22 22 33
+
 void evolve_corner(cornerRef src, cornerRef dst);
 
 void roll_corner(cornerRef src, int i, int j, cornerRef dst);
+
 
 typedef struct { int w, h; region* regions; }
   life;
